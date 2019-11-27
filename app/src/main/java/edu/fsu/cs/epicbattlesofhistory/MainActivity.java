@@ -3,12 +3,129 @@ package edu.fsu.cs.epicbattlesofhistory;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
+public class MainActivity extends AppCompatActivity implements
+
+        MainFragment.OnFragmentInteractionListener,
+        LoginFragment.OnLoginFragmentInteractionListener,
+        RegisterFragment.OnRegisterFragmentInteractionListener,
+        HomeFragment.OnHomeFragmentInteractionListener,
+        SummonFragment.OnSummonFragmentInteractionListener,
+        CharactersFragment.OnCharactersFragmentInteractionListener,
+        MapFragment.OnFriendMapFragmentInteractionListener //,
+        //BattlesFragment.OnBattleFragmentInteractionListener {
+
+    private FirebaseAuth mAuth=FirebaseAuth.getInstance();
+    //private FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        onMain();
+    }
+
+    @Override
+    public void backToMain() {
+        MainFragment main_fragment = new MainFragment();
+        String tag = MainFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, main_fragment, tag).commit();
+    }
+
+    @Override
+    public void backToHome() {
+        HomeFragment home_fragment = new HomeFragment();
+        String tag = HomeFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
+    }
+    public void onMain() {
+        MainFragment main_fragment = new MainFragment();
+        String tag = MainFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, main_fragment, tag).commit();
+    }
+
+    @Override
+    public void onStartLogin() {
+        LoginFragment login_fragment = new LoginFragment();
+        String tag = LoginFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, login_fragment, tag).commit();
+    }
+
+    @Override
+    public void onStartRegister() {
+        RegisterFragment register_fragment = new RegisterFragment();
+        String tag = RegisterFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, register_fragment, tag).commit();
+    }
+
+    @Override
+    public void onLoggedIn() {
+        HomeFragment home_fragment = new HomeFragment();
+        String tag = HomeFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
+    }
+
+    @Override
+    public void onRegistered() {
+        HomeFragment home_fragment = new HomeFragment();
+        String tag = HomeFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
+
+    }
+
+    @Override
+    public void onFriendClicked(String user) {
+        MapFragment map_fragment = new MapFragment(user);
+        String tag = MapFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, map_fragment, tag).commit();
+    }
+
+    @Override
+    public void onMenuCharactersClicked() {
+        CharactersFragment characters_fragment = new CharactersFragment();
+        String tag = CharactersFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, characters_fragment, tag).commit();
+    }
+
+    @Override
+    public void onMenuSummonClicked() {
+        SummonFragment summon_fragment = new AddFriendsFragment();
+        String tag = AddFriendsFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, summon_fragment, tag).commit();
+    }
+
+    @Override
+    public void onMenuMyHomeClicked() {
+        HomeFragment home_fragment = new HomeFragment();
+        String tag = HomeFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
+    }
+    /*
+    @Override
+    public void onBattlesClicked() {
+
+        //TODO: Implement Battles Fragment. When clicking on a map marker it should open the battle from that location
+        BattlesFragment summon_fragment = new HomeFragment();
+        String tag = BattlesFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, battles_fragment, tag).commit();
+    }
+*/
+
+    @Override
+    public void onMenuLogoutClicked() {
+        FirebaseAuth.getInstance().signOut();
+
+        MainFragment main_fragment = new MainFragment();
+        String tag = MainFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, main_fragment, tag).commit();
     }
 }
