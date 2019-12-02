@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity implements
         HomeFragment.OnHomeFragmentInteractionListener,
         SummonFragment.OnSummonFragmentInteractionListener,
         CharactersFragment.OnCharactersFragmentInteractionListener,
-        MapFragment.OnFriendMapFragmentInteractionListener //,
+        MapFragment.OnMapFragmentInteractionListener {//,
         //BattlesFragment.OnBattleFragmentInteractionListener {
 
     private FirebaseAuth mAuth=FirebaseAuth.getInstance();
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements
         String tag = HomeFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
     }
+
     public void onMain() {
         MainFragment main_fragment = new MainFragment();
         String tag = MainFragment.class.getCanonicalName();
@@ -83,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFriendClicked(String user) {
-        MapFragment map_fragment = new MapFragment(user);
+    public void onCharactersClicked(String character) {
+        MapFragment map_fragment = new MapFragment(character);
         String tag = MapFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, map_fragment, tag).commit();
     }
@@ -98,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onMenuSummonClicked() {
-        SummonFragment summon_fragment = new AddFriendsFragment();
-        String tag = AddFriendsFragment.class.getCanonicalName();
+        SummonFragment summon_fragment = new SummonFragment();
+        String tag = SummonFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, summon_fragment, tag).commit();
     }
 
@@ -108,6 +109,14 @@ public class MainActivity extends AppCompatActivity implements
         HomeFragment home_fragment = new HomeFragment();
         String tag = HomeFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
+    }
+
+    @Override
+    public void onSummonCLicked(){
+
+        SummonFragment summon_fragment = new SummonFragment();
+        String tag = SummonFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, summon_fragment, tag).commit();
     }
     /*
     @Override
