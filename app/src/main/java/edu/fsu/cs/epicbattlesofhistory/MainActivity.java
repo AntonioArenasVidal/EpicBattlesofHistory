@@ -41,12 +41,12 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, main_fragment, tag).commit();
     }
 
-    @Override
-    public void backToHome() {
-        HomeFragment home_fragment = new HomeFragment();
-        String tag = HomeFragment.class.getCanonicalName();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
-    }
+//    @Override
+//    public void backToHome() {
+//        HomeFragment home_fragment = new HomeFragment();
+//        String tag = HomeFragment.class.getCanonicalName();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
+//    }
 
     public void onMain() {
         MainFragment main_fragment = new MainFragment();
