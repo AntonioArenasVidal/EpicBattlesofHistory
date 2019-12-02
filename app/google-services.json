@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "952398658203",
+    "firebase_url": "https://epic-battles-of-history-28f83.firebaseio.com",
+    "project_id": "epic-battles-of-history-28f83",
+    "storage_bucket": "epic-battles-of-history-28f83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952398658203:android:5bc5659f37979f0beea43e",
+        "android_client_info": {
+          "package_name": "edu.fsu.cs.epicbattlesofhistory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952398658203-tgjuhlcv7u5iffgl4157mhq5u9aaoel8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.epicbattlesofhistory",
+            "certificate_hash": "f2ba3d048938fe5c680799e0ea22491afcb4586e"
+          }
+        },
+        {
+          "client_id": "952398658203-ffnfrf7a6ee18brgami8vori371rcq7i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCXgA4rTuvm-dOW9NrCmINuRWoU8nPAx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952398658203-ffnfrf7a6ee18brgami8vori371rcq7i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
