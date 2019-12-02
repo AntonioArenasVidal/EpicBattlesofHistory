@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity implements
         HomeFragment.OnHomeFragmentInteractionListener,
         SummonFragment.OnSummonFragmentInteractionListener,
         CharactersFragment.OnCharactersFragmentInteractionListener,
-        MapFragment.OnMapFragmentInteractionListener {//,
-        //BattlesFragment.OnBattleFragmentInteractionListener {
+        MapFragment.OnMapFragmentInteractionListener,
+        BattleFragment.OnBattleFragmentInteractionListener {
 
     private FirebaseAuth mAuth=FirebaseAuth.getInstance();
     //private FirebaseFirestore db;
