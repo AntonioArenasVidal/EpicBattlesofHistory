@@ -2,6 +2,7 @@ package edu.fsu.cs.epicbattlesofhistory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,9 +33,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         onMain();
-        Intent myIntent = new Intent(getApplicationContext(), MyMediaService.class);
-        myIntent.setAction("PLAY_NEUTRAL");
-        startService(myIntent);
+
     }
 
     @Override

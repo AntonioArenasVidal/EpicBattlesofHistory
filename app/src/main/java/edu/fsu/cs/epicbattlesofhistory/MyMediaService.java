@@ -27,8 +27,14 @@ public class MyMediaService extends Service {
 
         final String action = intent.getAction();
 
+        Log.d("Here", "here");
+
         if(ACTION_PLAY_EPIC.equals(action) || ACTION_PLAY_NEUTRAL.equals(action)) {
+            Log.d("Here1", "here");
+
             if(mp == null) {
+                Log.d("Here2", "here");
+
                 if(ACTION_PLAY_EPIC.equals(action))
                     mp = MediaPlayer.create(this, R.raw.epic);
                 else if(ACTION_PLAY_NEUTRAL.equals(action))

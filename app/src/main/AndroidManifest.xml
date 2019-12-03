@@ -35,6 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name="edu.fsu.cs.epicbattlesofhistory.MyMediaService"
+            android:enabled="true"
+            android:exported="false" />
+        
     </application>
 
 </manifest>

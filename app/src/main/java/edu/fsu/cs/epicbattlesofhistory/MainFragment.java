@@ -1,6 +1,7 @@
 package edu.fsu.cs.epicbattlesofhistory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -28,6 +29,10 @@ public class MainFragment extends Fragment{
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mListener = (OnFragmentInteractionListener) getActivity();
+
+        Intent myIntent = new Intent(getActivity().getApplicationContext(), MyMediaService.class);
+        myIntent.setAction("PLAY_NEUTRAL");
+        getActivity().startService(new Intent(getActivity(), MyMediaService.class));
 
         loginBtn = (Button)rootView.findViewById(R.id.main_login_btn);
         loginBtn.setOnClickListener(new View.OnClickListener() {
