@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         onMain();
+        Intent myIntent = new Intent(getApplicationContext(), MyMediaService.class);
+        myIntent.setAction("PLAY_NEUTRAL");
+        startService(myIntent);
     }
 
     @Override
