@@ -1,12 +1,17 @@
 package edu.fsu.cs.epicbattlesofhistory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,8 +28,30 @@ public class BattleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_battle, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        mListener = (OnBattleFragmentInteractionListener) getActivity();
+
+        Intent myIntent = new Intent(rootView.getContext(), MyMediaService.class);
+        myIntent.setAction("PLAY_EPIC");
+        getActivity().startService(myIntent);
+
+        return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.battle_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_exit_battle_item:
+                mListener.onMenuMyHomeClickedFromBattle();
+                break;
+        }
+        return true;
     }
 
 
@@ -47,6 +74,6 @@ public class BattleFragment extends Fragment {
 
 
     public interface OnBattleFragmentInteractionListener {
-
+        void onMenuMyHomeClickedFromBattle();
     }
 }
