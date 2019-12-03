@@ -30,7 +30,7 @@ public class MainFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mListener = (OnFragmentInteractionListener) getActivity();
 
-        Intent myIntent = new Intent(getActivity().getApplicationContext(), MyMediaService.class);
+        Intent myIntent = new Intent(rootView.getContext(), MyMediaService.class);
         myIntent.setAction("PLAY_NEUTRAL");
         getActivity().startService(new Intent(getActivity(), MyMediaService.class));
 
