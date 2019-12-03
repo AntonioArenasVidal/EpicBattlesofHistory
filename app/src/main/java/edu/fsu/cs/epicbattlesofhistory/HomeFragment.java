@@ -21,6 +21,8 @@ public class HomeFragment extends Fragment {
     private OnHomeFragmentInteractionListener mListener;
     private Boolean neutralSongRestartFlag;
 
+    Button tempBattleButton;
+
     public HomeFragment() {
         neutralSongRestartFlag = false;
     }
@@ -65,6 +67,13 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         mListener = (HomeFragment.OnHomeFragmentInteractionListener) getActivity();
+        tempBattleButton = (Button) rootView.findViewById(R.id.temp_battle_btn);
+        tempBattleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onBattleClicked();
+            }
+        });
 
         if(neutralSongRestartFlag.equals(true)) {
             Intent myIntent = new Intent(rootView.getContext(), MyMediaService.class);
@@ -98,5 +107,6 @@ public class HomeFragment extends Fragment {
         void onMenuCharactersClicked();
         void onMenuSummonClicked();
         void onMenuLogoutClicked();
+        void onBattleClicked();
     }
 }
