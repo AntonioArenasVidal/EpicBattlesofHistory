@@ -1,4 +1,4 @@
-package edu.fsu.cs.hw4;
+package edu.fsu.cs.epicbattlesofhistory;
 
 import android.app.IntentService;
 import android.app.Notification;
