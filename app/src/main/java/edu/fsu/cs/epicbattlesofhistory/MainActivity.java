@@ -146,4 +146,11 @@ public class MainActivity extends AppCompatActivity implements
         String tag = HomeFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, home_fragment, tag).commit();
     }
+
+    @Override
+    public void onBattleClicked() {
+        BattleFragment battle_fragment = new BattleFragment();
+        String tag = BattleFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, battle_fragment, tag).commit();
+    }
 }
