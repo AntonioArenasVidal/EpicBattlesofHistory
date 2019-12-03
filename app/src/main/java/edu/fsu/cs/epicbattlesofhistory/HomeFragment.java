@@ -1,6 +1,7 @@
 package edu.fsu.cs.epicbattlesofhistory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,9 +19,14 @@ import android.widget.Button;
 
 public class HomeFragment extends Fragment {
     private OnHomeFragmentInteractionListener mListener;
+    private Boolean neutralSongRestartFlag;
 
     public HomeFragment() {
-        // Required empty public constructor
+        neutralSongRestartFlag = false;
+    }
+
+    public HomeFragment(Boolean neutralSong) {
+        neutralSongRestartFlag = neutralSong;
     }
 
     @Override
@@ -60,6 +66,12 @@ public class HomeFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         mListener = (HomeFragment.OnHomeFragmentInteractionListener) getActivity();
 
+        if(neutralSongRestartFlag.equals(true)) {
+            Intent myIntent = new Intent(rootView.getContext(), MyMediaService.class);
+            myIntent.setAction("PLAY_NEUTRAL");
+            getActivity().startService(myIntent);
+        }
+
         return rootView;
     }
 
@@ -73,6 +85,7 @@ public class HomeFragment extends Fragment {
                     + " must implement OnHomeFragmentInteractionListener");
         }
     }
+
 
     @Override
     public void onDetach() {
