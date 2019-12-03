@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,12 @@ public class MainFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mListener = (OnFragmentInteractionListener) getActivity();
 
+        Log.d("here0", "here");
         Intent myIntent = new Intent(rootView.getContext(), MyMediaService.class);
         myIntent.setAction("PLAY_NEUTRAL");
-        getActivity().startService(new Intent(getActivity(), MyMediaService.class));
+        getActivity().startService(myIntent);
+        Log.d("here01", "here");
+
 
         loginBtn = (Button)rootView.findViewById(R.id.main_login_btn);
         loginBtn.setOnClickListener(new View.OnClickListener() {
