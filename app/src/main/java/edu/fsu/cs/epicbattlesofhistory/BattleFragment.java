@@ -7,18 +7,34 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Random;
 
 public class BattleFragment extends Fragment {
 
 
     private OnBattleFragmentInteractionListener mListener;
+    ImageView enemyImage;
+    ImageView userImageHP;
+    ImageView enemyImageHP;
+    Button attackButton;
+    TextView enemyHP;
+    TextView userHP;
+    TextView battleResult;
 
     public BattleFragment() {
         // Required empty public constructor
@@ -32,9 +48,55 @@ public class BattleFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_battle, container, false);
         mListener = (OnBattleFragmentInteractionListener) getActivity();
 
+        // TODO: connect to appropriate background location
+        rootView.setBackgroundResource(R.drawable.ozymandias);
+
+        enemyImage = (ImageView) rootView.findViewById(R.id.battle_enemy_image);
+        userImageHP = (ImageView) rootView.findViewById(R.id.battle_user_hp_image);
+        enemyImageHP = (ImageView) rootView.findViewById(R.id.battle_enemy_hp_image);
+        enemyHP = (TextView) rootView.findViewById(R.id.battle_enemy_hp);
+        userHP = (TextView) rootView.findViewById(R.id.battle_user_hp);
+        attackButton = (Button) rootView.findViewById(R.id.battle_attack_button);
+        battleResult = (TextView) rootView.findViewById(R.id.battle_result_label);
+
+        // TODO: Connect it to the appropriate user being clicked on
+        String summonedCharacter = "arthur";
+        String characterImageName = summonedCharacter + "_character";
+        userImageHP.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
+        String enemyImageName = summonedCharacter + "_enemy";
+        enemyImage.setImageResource(getResources().getIdentifier(enemyImageName, "drawable", getContext().getPackageName()));
+        enemyImageHP.setImageResource(getResources().getIdentifier(enemyImageName, "drawable", getContext().getPackageName()));
+
         Intent myIntent = new Intent(rootView.getContext(), MyMediaService.class);
         myIntent.setAction("PLAY_EPIC");
         getActivity().startService(myIntent);
+
+        attackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Random rand = new Random();
+                Integer userAttackPower = rand.nextInt(10)+1;
+                enemyHP.setText(Integer.toString(Integer.parseInt(enemyHP.getText().toString()) - userAttackPower));
+//                Toast enemyDamageToast = Toast.makeText(getContext(),"-" + Integer.toString(userAttackPower),Toast.LENGTH_SHORT);
+//                enemyDamageToast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+//                enemyDamageToast.show();
+                if(Integer.parseInt(enemyHP.getText().toString()) <= 0) {
+                    battleResult.setText("You Won!");
+                    attackButton.setClickable(false);
+                }
+                if(!battleResult.getText().toString().equals("You Won!")) {
+
+                    Integer enemyAttackPower = rand.nextInt(10)+1;
+                    userHP.setText(Integer.toString(Integer.parseInt(userHP.getText().toString()) - enemyAttackPower));
+                    Toast.makeText(getContext(),"User: -" + Integer.toString(enemyAttackPower) + "\nEnemy: -" + Integer.toString(userAttackPower),Toast.LENGTH_SHORT).show();
+
+                    if(Integer.parseInt(userHP.getText().toString()) <= 0) {
+                        battleResult.setText("You Lost!");
+                        attackButton.setClickable(false);
+                    }
+                }
+            }
+        });
 
         return rootView;
     }
@@ -77,4 +139,5 @@ public class BattleFragment extends Fragment {
     public interface OnBattleFragmentInteractionListener {
         void onMenuMyHomeClickedFromBattle();
     }
+
 }
