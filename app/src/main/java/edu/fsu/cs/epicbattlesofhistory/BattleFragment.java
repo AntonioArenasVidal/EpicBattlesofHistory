@@ -77,9 +77,6 @@ public class BattleFragment extends Fragment {
                 Random rand = new Random();
                 Integer userAttackPower = rand.nextInt(10)+1;
                 enemyHP.setText(Integer.toString(Integer.parseInt(enemyHP.getText().toString()) - userAttackPower));
-//                Toast enemyDamageToast = Toast.makeText(getContext(),"-" + Integer.toString(userAttackPower),Toast.LENGTH_SHORT);
-//                enemyDamageToast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
-//                enemyDamageToast.show();
                 if(Integer.parseInt(enemyHP.getText().toString()) <= 0) {
                     battleResult.setText("You Won!");
                     attackButton.setClickable(false);
@@ -88,7 +85,7 @@ public class BattleFragment extends Fragment {
 
                     Integer enemyAttackPower = rand.nextInt(10)+1;
                     userHP.setText(Integer.toString(Integer.parseInt(userHP.getText().toString()) - enemyAttackPower));
-                    Toast.makeText(getContext(),"User: -" + Integer.toString(enemyAttackPower) + "\nEnemy: -" + Integer.toString(userAttackPower),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Enemy: -" + Integer.toString(userAttackPower) + "\nUser: -" + Integer.toString(enemyAttackPower),Toast.LENGTH_SHORT).show();
 
                     if(Integer.parseInt(userHP.getText().toString()) <= 0) {
                         battleResult.setText("You Lost!");
