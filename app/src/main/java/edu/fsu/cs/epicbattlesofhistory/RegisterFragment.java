@@ -112,7 +112,7 @@ public class RegisterFragment extends Fragment{
                                 user.put("password", passInput.getText().toString());
                                 //user.put("TimeStamp", "");
                                 user.put("Characters", "");
-                                user.put("friendLocation", "");
+                                user.put("tokens", "20");
 
                                 //this block creates the user and pushes the userdata to database.
                                 //in database the authentication and the data is saved separately

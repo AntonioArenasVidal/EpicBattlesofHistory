@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Random;
+
 public class SummonFragment extends Fragment {
 
     private OnSummonFragmentInteractionListener mListener;
@@ -38,9 +40,14 @@ public class SummonFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_summon, container, false);
+        //return inflater.inflate(R.layout.fragment_summon, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_summon, container, false);
+        mListener = (SummonFragment.OnSummonFragmentInteractionListener) getActivity();
 
+        Random rand = new Random();
+        rand.setSeed(100);
 
+        return rootView;
     }
 
 
