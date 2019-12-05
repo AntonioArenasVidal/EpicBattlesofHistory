@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -31,11 +32,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Collections;
 
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
@@ -54,6 +58,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef;
+
+    //we are signed in so get current username using these lines
+    FirebaseUser usr = mAuth.getCurrentUser();
+    String cUser = usr.getEmail();
+    //we remove the @youremail.com part from the string in order to get the current username saved in a string
+    String UserName = cUser.replaceAll("@youremail.com", "");
 
     private Marker cLoc;
     LatLng battleLoc;
@@ -164,26 +174,70 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
 
+
+        battleLoc = new LatLng(Double.valueOf(50.6673), Double.valueOf(-4.7585)); //tintagel castle
+        final Marker char1 = map.addMarker(new MarkerOptions().position(battleLoc).title("arthur"));
+
+        battleLoc = new LatLng(Double.valueOf(41.9028), Double.valueOf(12.4964)); //rome
+        final Marker char2 = map.addMarker(new MarkerOptions().position(battleLoc).title("julius_caesar"));
+
+        battleLoc = new LatLng(Double.valueOf(42.364322), Double.valueOf(-71.034830)); //boston
+        final Marker char3 = map.addMarker(new MarkerOptions().position(battleLoc).title("washington"));
+
+        battleLoc = new LatLng(Double.valueOf(29.977380), Double.valueOf(31.131691)); //pyramids of giza
+        final Marker char4 = map.addMarker(new MarkerOptions().position(battleLoc).title("ozymandias"));
+
+        battleLoc = new LatLng(Double.valueOf(19.279649), Double.valueOf(-99.063986)); //tenochtitlan
+        final Marker char5 = map.addMarker(new MarkerOptions().position(battleLoc).title("montezuma"));
            /*
         COMPARE TO CHARACTER LIST, if not present, red (default) marker
             if present, green marker
-
          */
+        myRef = database.getReference("Users/" + UserName);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String characters;
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    if(data.getKey().equals("Characters")){
+                        characters = data.getValue().toString();
+                        final String[] cL = characters.split(" ");
+                        for(int i = 0; i < cL.length; i++) {
+                            if(cL[i].equals("arthur")) {
+                                char1.remove();
+                                battleLoc = new LatLng(Double.valueOf(50.6673), Double.valueOf(-4.7585)); //tintagel castle
+                                map.addMarker(new MarkerOptions().position(battleLoc).title("arthur").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-        battleLoc = new LatLng(Double.valueOf(50.6673), Double.valueOf(-4.7585)); //tintagel castle
-        map.addMarker(new MarkerOptions().position(battleLoc).title("arthur").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                            } else if(cL[i].equals("caesar")) {
+                                char2.remove();
+                                battleLoc = new LatLng(Double.valueOf(41.9028), Double.valueOf(12.4964)); //rome
+                                map.addMarker(new MarkerOptions().position(battleLoc).title("julius_caesar").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-        battleLoc = new LatLng(Double.valueOf(41.9028), Double.valueOf(12.4964)); //rome
-        map.addMarker(new MarkerOptions().position(battleLoc).title("julius_caesar"));
+                            } else if(cL[i].equals("washington")) {
+                                char3.remove();
+                                battleLoc = new LatLng(Double.valueOf(42.364322), Double.valueOf(-71.034830)); //boston
+                                map.addMarker(new MarkerOptions().position(battleLoc).title("washington").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-        battleLoc = new LatLng(Double.valueOf(42.364322), Double.valueOf(-71.034830)); //boston
-        map.addMarker(new MarkerOptions().position(battleLoc).title("washington"));
+                            } else if(cL[i].equals("ozymandias")) {
+                                char4.remove();
+                                battleLoc = new LatLng(Double.valueOf(29.977380), Double.valueOf(31.131691)); //pyramids of giza
+                                map.addMarker(new MarkerOptions().position(battleLoc).title("ozymandias").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
-        battleLoc = new LatLng(Double.valueOf(29.977380), Double.valueOf(31.131691)); //pyramids of giza
-        map.addMarker(new MarkerOptions().position(battleLoc).title("ozymandias"));
+                            } else if(cL[i].equals("montezuma")) {
+                                char5.remove();
+                                battleLoc = new LatLng(Double.valueOf(19.279649), Double.valueOf(-99.063986)); //tenochtitlan
+                                map.addMarker(new MarkerOptions().position(battleLoc).title("montezuma").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                            }
+                        }
+                    }
+                }
+            }
 
-        battleLoc = new LatLng(Double.valueOf(19.279649), Double.valueOf(-99.063986)); //tenochtitlan
-        map.addMarker(new MarkerOptions().position(battleLoc).title("montezuma"));
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
 
