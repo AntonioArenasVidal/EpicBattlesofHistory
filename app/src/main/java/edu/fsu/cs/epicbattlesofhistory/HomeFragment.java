@@ -68,6 +68,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private Marker cLoc;
     LatLng battleLoc;
 
+    boolean arthur = false;
+    boolean caesar = false;
+    boolean washington = false;
+    boolean montezuma = false;
+    boolean ozymandias = false;
+
     public HomeFragment() {
         neutralSongRestartFlag = false;
     }
@@ -207,26 +213,31 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                 char1.remove();
                                 battleLoc = new LatLng(Double.valueOf(50.6673), Double.valueOf(-4.7585)); //tintagel castle
                                 map.addMarker(new MarkerOptions().position(battleLoc).title("arthur").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                arthur = true;
 
                             } else if(cL[i].equals("caesar")) {
                                 char2.remove();
                                 battleLoc = new LatLng(Double.valueOf(41.9028), Double.valueOf(12.4964)); //rome
                                 map.addMarker(new MarkerOptions().position(battleLoc).title("julius_caesar").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                caesar = true;
 
                             } else if(cL[i].equals("washington")) {
                                 char3.remove();
                                 battleLoc = new LatLng(Double.valueOf(42.364322), Double.valueOf(-71.034830)); //boston
                                 map.addMarker(new MarkerOptions().position(battleLoc).title("washington").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                washington = true;
 
                             } else if(cL[i].equals("ozymandias")) {
                                 char4.remove();
                                 battleLoc = new LatLng(Double.valueOf(29.977380), Double.valueOf(31.131691)); //pyramids of giza
                                 map.addMarker(new MarkerOptions().position(battleLoc).title("ozymandias").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                ozymandias = true;
 
                             } else if(cL[i].equals("montezuma")) {
                                 char5.remove();
                                 battleLoc = new LatLng(Double.valueOf(19.279649), Double.valueOf(-99.063986)); //tenochtitlan
                                 map.addMarker(new MarkerOptions().position(battleLoc).title("montezuma").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                                montezuma = true;
                             }
                         }
                     }
@@ -244,24 +255,98 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
+                
                 switch(marker.getTitle()) {
-                    case "ozymandias": Toast.makeText(getContext(), "Prepare to fight Anubis!",Toast.LENGTH_SHORT).show(); break;
-                    case "arthur": Toast.makeText(getContext(), "Prepare to fight Knight Mordred!",Toast.LENGTH_SHORT).show(); break;
-                    case "montezuma": Toast.makeText(getContext(), "Prepare to fight Conquistador!",Toast.LENGTH_SHORT).show(); break;
-                    case "washington": Toast.makeText(getContext(), "Prepare to fight Redcoat!",Toast.LENGTH_SHORT).show(); break;
-                    case "julius_caesar": Toast.makeText(getContext(), "Prepare to fight Barbarian!",Toast.LENGTH_SHORT).show(); break;
+                    case "ozymandias":
+                        if (ozymandias) {
+                            Toast.makeText(getContext(), "Prepare to fight Anubis!",Toast.LENGTH_SHORT).show();
+                            BattleFragment battle_fragment = new BattleFragment();
+                            String tag = BattleFragment.class.getCanonicalName();
+
+                            Bundle extras = new Bundle();
+                            extras.putString("enemy", marker.getTitle());
+                            battle_fragment.setArguments(extras);
+
+                            FragmentTransaction trans = getFragmentManager().beginTransaction();
+                            trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Battle unavailable: summon gold character to unlock",Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+
+                    case "arthur":
+                        if (arthur) {
+                            Toast.makeText(getContext(), "Prepare to fight Knight Mordred!",Toast.LENGTH_SHORT).show();
+                            BattleFragment battle_fragment = new BattleFragment();
+                            String tag = BattleFragment.class.getCanonicalName();
+
+                            Bundle extras = new Bundle();
+                            extras.putString("enemy", marker.getTitle());
+                            battle_fragment.setArguments(extras);
+
+                            FragmentTransaction trans = getFragmentManager().beginTransaction();
+                            trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Battle unavailable: summon gold character to unlock",Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+
+                    case "montezuma":
+                        if (montezuma) {
+                            Toast.makeText(getContext(), "Prepare to fight Conquistador!",Toast.LENGTH_SHORT).show();
+                            BattleFragment battle_fragment = new BattleFragment();
+                            String tag = BattleFragment.class.getCanonicalName();
+
+                            Bundle extras = new Bundle();
+                            extras.putString("enemy", marker.getTitle());
+                            battle_fragment.setArguments(extras);
+
+                            FragmentTransaction trans = getFragmentManager().beginTransaction();
+                            trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Battle unavailable: summon gold character to unlock",Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+
+                    case "washington":
+                        if (washington) {
+                            Toast.makeText(getContext(), "Prepare to fight Redcoat!",Toast.LENGTH_SHORT).show();
+                            BattleFragment battle_fragment = new BattleFragment();
+                            String tag = BattleFragment.class.getCanonicalName();
+
+                            Bundle extras = new Bundle();
+                            extras.putString("enemy", marker.getTitle());
+                            battle_fragment.setArguments(extras);
+
+                            FragmentTransaction trans = getFragmentManager().beginTransaction();
+                            trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Battle unavailable: summon gold character to unlock",Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+
+                    case "julius_caesar":
+                        if (caesar) {
+                            Toast.makeText(getContext(), "Prepare to fight Barbarian!",Toast.LENGTH_SHORT).show();
+                            BattleFragment battle_fragment = new BattleFragment();
+                            String tag = BattleFragment.class.getCanonicalName();
+
+                            Bundle extras = new Bundle();
+                            extras.putString("enemy", marker.getTitle());
+                            battle_fragment.setArguments(extras);
+
+                            FragmentTransaction trans = getFragmentManager().beginTransaction();
+                            trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Battle unavailable: summon gold character to unlock",Toast.LENGTH_SHORT).show();
+                        }
+                        break;
                 }
-
-                BattleFragment battle_fragment = new BattleFragment();
-                String tag = BattleFragment.class.getCanonicalName();
-
-                Bundle extras = new Bundle();
-                extras.putString("enemy", marker.getTitle());
-                battle_fragment.setArguments(extras);
-
-                FragmentTransaction trans = getFragmentManager().beginTransaction();
-                trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
 
                 return true;
             }
