@@ -22,4 +22,13 @@
         <item name="gold_UI_character4">Ozymandias</item>
         <item name="gold_UI_character5">Montezuma</item>
     </string-array>
+
+    <!-- These are the Gold Characters DB Names -->
+    <string-array name="gold_character_DB_names">
+        <item name="gold_UI_character1">arthur</item>
+        <item name="gold_UI_character2">caesar</item>
+        <item name="gold_UI_character3">washington</item>
+        <item name="gold_UI_character4">ozymandias</item>
+        <item name="gold_UI_character5">montezuma</item>
+    </string-array>
 </resources>
