@@ -1,11 +1,14 @@
 package edu.fsu.cs.epicbattlesofhistory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,18 +19,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.snapshot.Node;
 
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class SummonFragment extends Fragment {
 
     private OnSummonFragmentInteractionListener mListener;
 
-    FirebaseAuth mAuth;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
 
@@ -55,15 +70,111 @@ public class SummonFragment extends Fragment {
             public void onClick(View view) {
                 String summonedCharacter = "";
                 // TODO: Antonio randomly generate the character from DB based on the gold logic we were speaking off
+                String summon = null;
                 Random rand = new Random();
-                rand.setSeed(100);
-                summonedCharacter = "arthur";
+                //rand.setSeed(100);
+
+                int randomInt = rand.nextInt(100)+1;
+                Log.d("Random Value", String.valueOf(randomInt));
+
+                if (randomInt <= 10){
+                    int randomGold =  rand.nextInt(5)+1;
+                    switch (randomGold){
+                        case 1:
+                            summonedCharacter = "arthur";
+                            break;
+                        case 2:
+                            summonedCharacter = "caesar";
+                            break;
+                        case 3:
+                            summonedCharacter = "ozymandias";
+                            break;
+                        case 4:
+                            summonedCharacter = "montezuma";
+                            break;
+                        case 5:
+                            summonedCharacter = "washington";
+                            break;
+                    }
+
+                }
+                else if(randomInt > 10 && randomInt <= 30){
+                    int randomSilver =  rand.nextInt(5)+1;
+                    switch (randomSilver){
+                        case 1:
+                            summonedCharacter = "lancelot";
+                            break;
+                        case 2:
+                            summonedCharacter = "vlad";
+                            break;
+                        case 3:
+                            summonedCharacter = "robin";
+                            break;
+                        case 4:
+                            summonedCharacter = "Bolivar";
+                            break;
+                        case 5:
+                            summonedCharacter = "joan";
+                            break;
+                    }
+
+                }
+                else {
+                    int randomBronze =  rand.nextInt(5)+1;
+                    switch (randomBronze){
+                        case 1:
+                            summonedCharacter = "blackbeard";
+                            break;
+                        case 2:
+                            summonedCharacter = "leonidas";
+                            break;
+                        case 3:
+                            summonedCharacter = "erikson";
+                            break;
+                        case 4:
+                            summonedCharacter = "atahualpa";
+                            break;
+                        case 5:
+                            summonedCharacter = "cleopatra";
+                            break;
+                    }
+
+                }
                 String characterImageName = summonedCharacter + "_character";
 
-                // TODO: Change token to corresponding token cound in users DB in firebase
+                FirebaseUser user = mAuth.getCurrentUser();
+                String cUser = user.getEmail();
+                String usr =  cUser.replaceAll("@youremail.com", "");
 
-                tokens.setText(Integer.toString(Integer.parseInt(tokens.getText().toString()) - 1));
-                character.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
+                // TODO: Change token to corresponding token cound in users DB in firebase
+                myRef = database.getReference("users/" + usr);
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            if (data.getKey().equals("tokens")) {
+                                String token = data.getValue().toString();
+                                tokens.setText(token);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                String check = tokens.toString();
+                if (check == "0"){
+                    Toast.makeText(getContext(), "You have no more Tokens", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    int t = Integer.parseInt(tokens.toString());
+                    t -= 1;
+                    character.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
+                    myRef.child("tokens").setValue(String.valueOf(t));
+                }
             }
         });
 
