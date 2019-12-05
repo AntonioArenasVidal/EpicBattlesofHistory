@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class BattleFragment extends Fragment {
@@ -59,6 +63,7 @@ public class BattleFragment extends Fragment {
     String cUser = usr.getEmail();
     //we remove the @youremail.com part from the string in order to get the current username saved in a string
     String UserName = cUser.replaceAll("@youremail.com", "");
+    String dbTokens = "";
 
     public BattleFragment() {
         // Required empty public constructor
@@ -124,6 +129,42 @@ public class BattleFragment extends Fragment {
                 if(Integer.parseInt(enemyHP.getText().toString()) <= 0) {
                     battleResult.setText("You Won!");
                     attackButton.setClickable(false);
+
+
+                    myRef = database.getReference("Users/"+ UserName);
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String tokens = "";
+                            //again character field
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                if (data.getKey().equals("tokens")) {
+                                    dbTokens = data.getValue().toString();
+                                    Log.d("myTOkens", dbTokens);
+                                    Log.d("wh", "at");
+                                }
+                            }
+                            dbTokens = Integer.toString((Integer.parseInt(dbTokens) +5));
+                            final Map<String, Object> token = new HashMap<>();
+                            token.put("tokens", dbTokens);
+                            myRef.updateChildren(token).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.w("DB SUCCESS", "removed token");
+                                    } else {
+                                        Log.w("DB FAIL", "did not remove token");
+                                    }
+                                }
+                            });
+
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
 
                 if(!battleResult.getText().toString().equals("You Won!")) {
