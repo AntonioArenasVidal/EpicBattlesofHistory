@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.SystemClock;
@@ -16,12 +17,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Collections;
 import java.util.Random;
 
 public class BattleFragment extends Fragment {
@@ -35,6 +46,19 @@ public class BattleFragment extends Fragment {
     TextView enemyHP;
     TextView userHP;
     TextView battleResult;
+    Boolean battleFlag = false;
+    String summonedCharacter = "arthur";
+
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef;
+    DatabaseReference myRef2;
+
+    //we are signed in so get current username using these lines
+    FirebaseUser usr = mAuth.getCurrentUser();
+    String cUser = usr.getEmail();
+    //we remove the @youremail.com part from the string in order to get the current username saved in a string
+    String UserName = cUser.replaceAll("@youremail.com", "");
 
     public BattleFragment() {
         // Required empty public constructor
@@ -58,13 +82,14 @@ public class BattleFragment extends Fragment {
         attackButton = (Button) rootView.findViewById(R.id.battle_attack_button);
         battleResult = (TextView) rootView.findViewById(R.id.battle_result_label);
 
+
         // TODO: Connect it to the appropriate user being clicked on
         Bundle args = getArguments();
 
-        String summonedCharacter = "arthur";
         if (args != null) {
             summonedCharacter = args.getString("enemy");
         }
+
 
         switch(summonedCharacter) {
             case "ozymandias": rootView.setBackgroundResource(R.drawable.ozymandias); break;
@@ -120,6 +145,37 @@ public class BattleFragment extends Fragment {
                 }
             }
         });
+
+        myRef = database.getReference("Users/" + UserName);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String characters;
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    if(data.getKey().equals("Characters")){
+                        characters = data.getValue().toString();
+                        final String[] cL = characters.split(" ");
+                        for(int i = 0; i < cL.length; i++) {
+                            if(summonedCharacter.equals(cL[i])) {
+                                battleFlag = true;
+                                Log.d("foundit", "it");
+                            }
+                        }
+                        if(battleFlag.equals(false)) {
+                            attackButton.setClickable(false);
+                            Log.d("IN", "HERE");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         return rootView;
     }
