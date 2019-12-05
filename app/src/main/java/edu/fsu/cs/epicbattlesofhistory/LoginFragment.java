@@ -79,62 +79,28 @@ public class LoginFragment extends Fragment {
                 if(passInput.length() == 0)
                     passInput.setError("Enter Password");
                 if( (usrInput.length() != 0) && (passInput.length() != 0) ) {
-                    mListener.onLoggedIn();
+                   // mListener.onLoggedIn();
                     //if local tests pass, moves to matching the input to the database
                     //reference to the root node
-                    myRef = database.getReference("Users");
-                    //searches for a username node in the db
-//                    myRef.child(usrInput.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            //if username exists. success
-//                            if(dataSnapshot.exists()){
-//                                Log.w(" success", "username found in db");
-//                                //now a query for the password
-//                                Query query = FirebaseDatabase.getInstance().getReference("Users").orderByChild("password").equalTo(passInput.getText().toString());
-//                                query.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                        //if password matches. success.
-//                                        if(dataSnapshot.exists()){
-//                                            Log.w("success", "password found in db");
-//                                            //now that we confirmed the user, we can sign in using the given username and password
-//                                            mAuth = FirebaseAuth.getInstance();
-//                                            //We append "@youremail.com" to the username to trick firebase that we are using an email address for login
-//                                            mAuth.signInWithEmailAndPassword(usrInput.getText().toString()+"@youremail.com", passInput.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<AuthResult> task) {
-//                                                    //once we sign in we can move to the next fragment
-//                                                    mListener.onLoggedIn();
-//                                                }
-//                                            });
-//
-//                                        }
-//                                        else{
-//                                            //if password not found logs error and displays it in the password field.
-//                                            Log.w("error", "password not found in db");
-//                                            passInput.setError("incorrect password");
-//                                        }
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                    }
-//                                });
-//                            }
-//                            else {
-//                                //if username not found logs error and displays it in username field
-//                                Log.w("error", "username not found in db");
-//                                usrInput.setError("Username not found");
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                    });
+
+                    mAuth = FirebaseAuth.getInstance();
+                    //We append "@youremail.com" to the username to trick firebase that we are using an email address for login
+                    mAuth.signInWithEmailAndPassword(usrInput.getText().toString()+"@youremail.com", passInput.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            //once we sign in we can move to the next fragment
+                            if(task.isSuccessful()){
+                                mListener.onLoggedIn();
+                                Log.d("Login: ", "success");
+                            }
+
+                            else{
+                                Log.d("Login: ", "failed");
+                                usrInput.setError("incorrect username or password");
+                                passInput.setError("incorrect username or password");
+                            }
+                        }
+                    });
                 }
             }
         });
