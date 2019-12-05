@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +37,10 @@ import com.google.firebase.database.snapshot.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class SummonFragment extends Fragment {
@@ -49,6 +54,13 @@ public class SummonFragment extends Fragment {
     ImageView character;
     Button summonBtn;
     TextView tokens;
+    String summonedCharacter = "";
+    String characterImageName = "";
+
+    FirebaseUser user = mAuth.getCurrentUser();
+    String cUser = user.getEmail();
+    String dbTokens;
+    final String usr =  cUser.replaceAll("@youremail.com", "");
 
     public SummonFragment() {
         // Required empty public constructor
@@ -68,8 +80,11 @@ public class SummonFragment extends Fragment {
         summonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String summonedCharacter = "";
-                // TODO: Antonio randomly generate the character from DB based on the gold logic we were speaking off
+
+                FirebaseUser user = mAuth.getCurrentUser();
+                String cUser = user.getEmail();
+                String usr =  cUser.replaceAll("@youremail.com", "");
+
                 String summon = null;
                 Random rand = new Random();
                 //rand.setSeed(100);
@@ -78,6 +93,7 @@ public class SummonFragment extends Fragment {
                 Log.d("Random Value", String.valueOf(randomInt));
 
                 if (randomInt <= 10){
+                    Toast.makeText(getContext(), "Gold Character!!!", Toast.LENGTH_SHORT).show();
                     int randomGold =  rand.nextInt(5)+1;
                     switch (randomGold){
                         case 1:
@@ -99,6 +115,7 @@ public class SummonFragment extends Fragment {
 
                 }
                 else if(randomInt > 10 && randomInt <= 30){
+                    Toast.makeText(getContext(), "Silver Character!", Toast.LENGTH_SHORT).show();
                     int randomSilver =  rand.nextInt(5)+1;
                     switch (randomSilver){
                         case 1:
@@ -111,7 +128,7 @@ public class SummonFragment extends Fragment {
                             summonedCharacter = "robin";
                             break;
                         case 4:
-                            summonedCharacter = "Bolivar";
+                            summonedCharacter = "bolivar";
                             break;
                         case 5:
                             summonedCharacter = "joan";
@@ -120,6 +137,7 @@ public class SummonFragment extends Fragment {
 
                 }
                 else {
+                    Toast.makeText(getContext(), "Bronze Character", Toast.LENGTH_SHORT).show();
                     int randomBronze =  rand.nextInt(5)+1;
                     switch (randomBronze){
                         case 1:
@@ -140,23 +158,123 @@ public class SummonFragment extends Fragment {
                     }
 
                 }
-                String characterImageName = summonedCharacter + "_character";
+                characterImageName = summonedCharacter + "_character";
 
-                FirebaseUser user = mAuth.getCurrentUser();
-                String cUser = user.getEmail();
-                String usr =  cUser.replaceAll("@youremail.com", "");
-
-                // TODO: Change token to corresponding token cound in users DB in firebase
-                myRef = database.getReference("users/" + usr);
+//
+                myRef = database.getReference("Users/" + usr);
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String c;
+                        //again character field
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            if (data.getKey().equals("tokens")) {
-                                String token = data.getValue().toString();
-                                tokens.setText(token);
+                            if(data.getKey().equals("Tokens")){
+                                dbTokens = data.getValue().toString();
+                                tokens.setText(dbTokens);
+                            }
+                            if (data.getKey().equals("Characters")) {
+                                c = data.getValue().toString();
+                                final String[] cL = c.split(" ");
+                                if(Arrays.asList(cL).contains(summonedCharacter)) {
+                                    Toast.makeText(getContext(), "You already own this character " + summonedCharacter, Toast.LENGTH_SHORT).show();
+                                    character.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
+                                    //tokens.setError("You already own this character");
+                                    String check = tokens.toString();
+                                    if (check == "0"){
+                                        Toast.makeText(getContext(), "You have no more Tokens", Toast.LENGTH_LONG).show();
+                                        //tokens.setError("You have no more tokens");
+                                    }
+//                                    else {
+//                                        int t = Integer.parseInt(tokens.toString());
+//                                        t -= 1;
+//                                        final Map<String, Object> token = new HashMap<>();
+//                                        token.put("Tokens", String.valueOf(t));
+//                                        myRef.updateChildren(token).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<Void> task) {
+//                                                if(task.isSuccessful()){
+//                                                    Log.w("DB SUCCESS", "removed token");
+//                                                }
+//                                                else {
+//                                                    Log.w("DB FAIL", "did not remove token");
+//                                                }
+//                                            }
+//                                        });
+//                                    }
+                                }
+                                else {
+                                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            String f;
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                if (data.getKey().equals("tokens")) {
+                                                    String token = data.getValue().toString();
+                                                    tokens.setText(token);
+                                                }
+                                            }
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                if (data.getKey().equals("Characters")) {
+                                                    f = data.getValue().toString();
+                                                    if (f.isEmpty())
+                                                        f = summonedCharacter;
+                                                    else
+                                                        f = f + " " + summonedCharacter;
+                                                    final Map<String, Object> Character = new HashMap<>();
+                                                    Character.put("Characters", f);
+                                                    myRef.updateChildren(Character).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()){
+                                                                character.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
+                                                                Log.w("DB success", "character added " + summonedCharacter);
+                                                            }
+                                                            else
+                                                                Log.w("DB fail", "character not added");
+                                                        }
+                                                    });
+
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    String check = tokens.toString();
+                                    if (check == "0"){
+                                        //Toast.makeText(getContext(), "You have no more Tokens", Toast.LENGTH_LONG).show();
+                                        tokens.setError("You have no more tokens");
+                                    }
+//                                    else {
+//                                        int t = Integer.parseInt(tokens.toString());
+//                                        t -= 1;
+//                                        final Map<String, Object> token = new HashMap<>();
+//                                        token.put("Tokens", String.valueOf(t));
+//                                        myRef.updateChildren(token).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<Void> task) {
+//                                                if(task.isSuccessful()){
+//                                                    Log.w("DB SUCCESS", "removed token");
+//                                                }
+//                                                else {
+//                                                    Log.w("DB FAIL", "did not remove token");
+//                                                }
+//                                            }
+//                                        });
+//
+//                                    }
+                                }
+
                             }
                         }
+
+
+
+
                     }
 
                     @Override
@@ -165,18 +283,14 @@ public class SummonFragment extends Fragment {
                     }
                 });
 
-                String check = tokens.toString();
-                if (check == "0"){
-                    Toast.makeText(getContext(), "You have no more Tokens", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    int t = Integer.parseInt(tokens.toString());
-                    t -= 1;
-                    character.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
-                    myRef.child("tokens").setValue(String.valueOf(t));
-                }
+//
+
+
+
             }
         });
+
+
 
 
         return rootView;
@@ -227,7 +341,6 @@ public class SummonFragment extends Fragment {
 
 
     public interface OnSummonFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onSummonCLicked();
         void onMenuMyHomeClicked();
         void onMenuCharactersClicked();
