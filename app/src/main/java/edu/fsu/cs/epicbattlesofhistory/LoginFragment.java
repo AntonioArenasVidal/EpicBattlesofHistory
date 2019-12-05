@@ -82,8 +82,8 @@ public class LoginFragment extends Fragment {
                     mListener.onLoggedIn();
                     //if local tests pass, moves to matching the input to the database
                     //reference to the root node
-//                    myRef = database.getReference("Users");
-//                    //searches for a username node in the db
+                    myRef = database.getReference("Users");
+                    //searches for a username node in the db
 //                    myRef.child(usrInput.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
 //                        @Override
 //                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

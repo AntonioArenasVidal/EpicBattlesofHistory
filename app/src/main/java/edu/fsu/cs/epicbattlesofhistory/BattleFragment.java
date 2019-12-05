@@ -49,7 +49,6 @@ public class BattleFragment extends Fragment {
         mListener = (OnBattleFragmentInteractionListener) getActivity();
 
         // TODO: connect to appropriate background location
-        rootView.setBackgroundResource(R.drawable.ozymandias);
 
         enemyImage = (ImageView) rootView.findViewById(R.id.battle_enemy_image);
         userImageHP = (ImageView) rootView.findViewById(R.id.battle_user_hp_image);
@@ -60,7 +59,21 @@ public class BattleFragment extends Fragment {
         battleResult = (TextView) rootView.findViewById(R.id.battle_result_label);
 
         // TODO: Connect it to the appropriate user being clicked on
+        Bundle args = getArguments();
+
         String summonedCharacter = "arthur";
+        if (args != null) {
+            summonedCharacter = args.getString("enemy");
+        }
+
+        switch(summonedCharacter) {
+            case "ozymandias": rootView.setBackgroundResource(R.drawable.ozymandias); break;
+            case "arthur": rootView.setBackgroundResource(R.drawable.arthur); break;
+            case "montezuma": rootView.setBackgroundResource(R.drawable.montezuma); break;
+            case "washington": rootView.setBackgroundResource(R.drawable.george_washington); break;
+            case "julius_caesar": rootView.setBackgroundResource(R.drawable.julius_caesar); break;
+        }
+
         String characterImageName = summonedCharacter + "_character";
         userImageHP.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
         String enemyImageName = summonedCharacter + "_enemy";

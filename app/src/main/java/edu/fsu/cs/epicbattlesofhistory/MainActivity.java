@@ -92,6 +92,16 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, map_fragment, tag).commit();
     }
 
+    /*
+    @Override
+    public void onMarkerClicked(String battleCharacter) {
+
+        //TODO: Implement Battles Fragment. When clicking on a map marker it should open the battle from that location
+        BattleFragment battle_fragment = new BattleFragment(battleCharacter);
+        String tag = BattleFragment.class.getCanonicalName();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, battle_fragment, tag).commit();
+    }*/
+
     @Override
     public void onMenuCharactersClicked() {
         CharactersFragment characters_fragment = new CharactersFragment();
@@ -120,16 +130,8 @@ public class MainActivity extends AppCompatActivity implements
         String tag = SummonFragment.class.getCanonicalName();
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, summon_fragment, tag).commit();
     }
-    /*
-    @Override
-    public void onBattlesClicked() {
 
-        //TODO: Implement Battles Fragment. When clicking on a map marker it should open the battle from that location
-        BattlesFragment summon_fragment = new HomeFragment();
-        String tag = BattlesFragment.class.getCanonicalName();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_fragment, battles_fragment, tag).commit();
-    }
-*/
+
 
     @Override
     public void onMenuLogoutClicked() {

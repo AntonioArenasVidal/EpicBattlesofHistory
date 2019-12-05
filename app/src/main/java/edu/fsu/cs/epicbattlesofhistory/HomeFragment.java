@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,11 +20,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,6 +56,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private DatabaseReference myRef;
 
     private Marker cLoc;
+    LatLng battleLoc;
 
     public HomeFragment() {
         neutralSongRestartFlag = false;
@@ -105,14 +109,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 break;
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 99);
         }
-
-        tempBattleButton = (Button) rootView.findViewById(R.id.temp_battle_btn);
-        tempBattleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onBattleClicked();
-            }
-        });
 
         if(neutralSongRestartFlag.equals(true)) {
             Intent myIntent = new Intent(rootView.getContext(), MyMediaService.class);
@@ -167,7 +163,55 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
-        addMarkers();
+
+           /*
+        COMPARE TO CHARACTER LIST, if not present, red (default) marker
+            if present, green marker
+
+         */
+
+        battleLoc = new LatLng(Double.valueOf(50.6673), Double.valueOf(-4.7585)); //tintagel castle
+        map.addMarker(new MarkerOptions().position(battleLoc).title("arthur").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+        battleLoc = new LatLng(Double.valueOf(41.9028), Double.valueOf(12.4964)); //rome
+        map.addMarker(new MarkerOptions().position(battleLoc).title("julius_caesar"));
+
+        battleLoc = new LatLng(Double.valueOf(42.364322), Double.valueOf(-71.034830)); //boston
+        map.addMarker(new MarkerOptions().position(battleLoc).title("washington"));
+
+        battleLoc = new LatLng(Double.valueOf(29.977380), Double.valueOf(31.131691)); //pyramids of giza
+        map.addMarker(new MarkerOptions().position(battleLoc).title("ozymandias"));
+
+        battleLoc = new LatLng(Double.valueOf(19.279649), Double.valueOf(-99.063986)); //tenochtitlan
+        map.addMarker(new MarkerOptions().position(battleLoc).title("montezuma"));
+
+
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                switch(marker.getTitle()) {
+                    case "ozymandias": Toast.makeText(getContext(), "Prepare to fight Anubis!",Toast.LENGTH_SHORT).show(); break;
+                    case "arthur": Toast.makeText(getContext(), "Prepare to fight Knight Mordred!",Toast.LENGTH_SHORT).show(); break;
+                    case "montezuma": Toast.makeText(getContext(), "Prepare to fight Conquistador!",Toast.LENGTH_SHORT).show(); break;
+                    case "washington": Toast.makeText(getContext(), "Prepare to fight Redcoat!",Toast.LENGTH_SHORT).show(); break;
+                    case "julius_caesar": Toast.makeText(getContext(), "Prepare to fight Barbarian!",Toast.LENGTH_SHORT).show(); break;
+                }
+
+                BattleFragment battle_fragment = new BattleFragment();
+                String tag = BattleFragment.class.getCanonicalName();
+
+                Bundle extras = new Bundle();
+                extras.putString("enemy", marker.getTitle());
+                battle_fragment.setArguments(extras);
+
+                FragmentTransaction trans = getFragmentManager().beginTransaction();
+                trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
+
+                return true;
+            }
+        });
     }
 
     public interface OnHomeFragmentInteractionListener {
@@ -178,6 +222,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         void onBattleClicked();
     }
 
+    /* FUNCTION OBSOLETE - markers added in onMapReady
     public void addMarkers(){
         myRef = FirebaseDatabase.getInstance().getReference();
         myRef = database.getReference("Characters/gold");
@@ -225,4 +270,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
+
+     */
 }
