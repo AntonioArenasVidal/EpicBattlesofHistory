@@ -4,4 +4,22 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="token">20</string>
+
+    <!-- These are the Gold Characters File Prefixes -->
+    <string-array name="gold_character_file_prefixes">
+        <item name="gold_prefix_character1">arthur</item>
+        <item name="gold_prefix_character2">julius_caesar</item>
+        <item name="gold_prefix_character3">washington</item>
+        <item name="gold_prefix_character4">ozymandias</item>
+        <item name="gold_prefix_character5">montezuma</item>
+    </string-array>
+
+    <!-- These are the Gold Characters UI Names -->
+    <string-array name="gold_character_UI_names">
+        <item name="gold_UI_character1">Arthur</item>
+        <item name="gold_UI_character2">Julius Caesar</item>
+        <item name="gold_UI_character3">Washington</item>
+        <item name="gold_UI_character4">Ozymandias</item>
+        <item name="gold_UI_character5">Montezuma</item>
+    </string-array>
 </resources>
