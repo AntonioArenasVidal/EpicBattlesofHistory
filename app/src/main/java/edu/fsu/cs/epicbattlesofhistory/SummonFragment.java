@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,7 +60,7 @@ public class SummonFragment extends Fragment {
 
     FirebaseUser user = mAuth.getCurrentUser();
     String cUser = user.getEmail();
-    String dbTokens;
+    String dbTokens = "";
     final String usr =  cUser.replaceAll("@youremail.com", "");
 
     public SummonFragment() {
@@ -77,6 +78,29 @@ public class SummonFragment extends Fragment {
         character = (ImageView) rootView.findViewById(R.id.summon_character_image);
         tokens = (TextView) rootView.findViewById(R.id.tokens);
         summonBtn = (Button) rootView.findViewById(R.id.summon_button);
+        myRef = database.getReference("Users/" + usr);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String f;
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.getKey().equals("tokens")) {
+                        String token = data.getValue().toString();
+                        tokens.setText(token);
+                        String check = tokens.getText().toString();
+                        if (check.equals("0")){
+                            //Toast.makeText(getContext(), "You have no more Tokens", Toast.LENGTH_LONG).show();
+                            tokens.setError("You have no more tokens");
+                            summonBtn.setClickable(false);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         summonBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,7 +184,25 @@ public class SummonFragment extends Fragment {
                 }
                 characterImageName = summonedCharacter + "_character";
 
-//
+
+                myRef = database.getReference("Users/" + usr);
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String characters;
+                        for(DataSnapshot data: dataSnapshot.getChildren()){
+                            if(data.getKey().equals("tokens")){
+                               dbTokens = data.getValue().toString();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 myRef = database.getReference("Users/" + usr);
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -168,39 +210,41 @@ public class SummonFragment extends Fragment {
                         String c;
                         //again character field
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            if(data.getKey().equals("Tokens")){
+                            if(data.getKey().equals("tokens")){
                                 dbTokens = data.getValue().toString();
+                                Log.d("myTOkens", dbTokens);
+                                Log.d("wh", "at");
                                 tokens.setText(dbTokens);
                             }
                             if (data.getKey().equals("Characters")) {
                                 c = data.getValue().toString();
                                 final String[] cL = c.split(" ");
                                 if(Arrays.asList(cL).contains(summonedCharacter)) {
+                                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            String f;
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                if (data.getKey().equals("tokens")) {
+                                                    String token = data.getValue().toString();
+                                                    tokens.setText(token);
+                                                    String check = tokens.getText().toString();
+                                                    if (check.equals("0")){
+                                                        tokens.setError("You have no more tokens");
+                                                        summonBtn.setClickable(false);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
                                     Toast.makeText(getContext(), "You already own this character " + summonedCharacter, Toast.LENGTH_SHORT).show();
                                     character.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
-                                    //tokens.setError("You already own this character");
-                                    String check = tokens.toString();
-                                    if (check == "0"){
-                                        Toast.makeText(getContext(), "You have no more Tokens", Toast.LENGTH_LONG).show();
-                                        //tokens.setError("You have no more tokens");
-                                    }
-//                                    else {
-//                                        int t = Integer.parseInt(tokens.toString());
-//                                        t -= 1;
-//                                        final Map<String, Object> token = new HashMap<>();
-//                                        token.put("Tokens", String.valueOf(t));
-//                                        myRef.updateChildren(token).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<Void> task) {
-//                                                if(task.isSuccessful()){
-//                                                    Log.w("DB SUCCESS", "removed token");
-//                                                }
-//                                                else {
-//                                                    Log.w("DB FAIL", "did not remove token");
-//                                                }
-//                                            }
-//                                        });
-//                                    }
                                 }
                                 else {
                                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -225,11 +269,10 @@ public class SummonFragment extends Fragment {
                                                     myRef.updateChildren(Character).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()){
+                                                            if (task.isSuccessful()) {
                                                                 character.setImageResource(getResources().getIdentifier(characterImageName, "drawable", getContext().getPackageName()));
                                                                 Log.w("DB success", "character added " + summonedCharacter);
-                                                            }
-                                                            else
+                                                            } else
                                                                 Log.w("DB fail", "character not added");
                                                         }
                                                     });
@@ -243,38 +286,37 @@ public class SummonFragment extends Fragment {
 
                                         }
                                     });
-
-                                    String check = tokens.toString();
-                                    if (check == "0"){
-                                        //Toast.makeText(getContext(), "You have no more Tokens", Toast.LENGTH_LONG).show();
-                                        tokens.setError("You have no more tokens");
-                                    }
-//                                    else {
-//                                        int t = Integer.parseInt(tokens.toString());
-//                                        t -= 1;
-//                                        final Map<String, Object> token = new HashMap<>();
-//                                        token.put("Tokens", String.valueOf(t));
-//                                        myRef.updateChildren(token).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<Void> task) {
-//                                                if(task.isSuccessful()){
-//                                                    Log.w("DB SUCCESS", "removed token");
-//                                                }
-//                                                else {
-//                                                    Log.w("DB FAIL", "did not remove token");
-//                                                }
-//                                            }
-//                                        });
-//
-//                                    }
                                 }
 
+                                String check = tokens.getText().toString();
+                                if (check.equals("0")){
+                                    tokens.setError("You have no more tokens");
+                                    summonBtn.setClickable(false);
+                                }
+                                else {
+                                    if (dbTokens.equals("0")){
+                                        tokens.setError("You have no more tokens");
+                                        summonBtn.setClickable(false);
+                                    } else {
+                                        dbTokens = Integer.toString((Integer.parseInt(dbTokens) - 1));
+                                        tokens.setText(dbTokens);
+                                        final Map<String, Object> token = new HashMap<>();
+                                        token.put("tokens", dbTokens);
+                                        myRef.updateChildren(token).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Log.w("DB SUCCESS", "removed token");
+                                                }
+                                                else {
+                                                    Log.w("DB FAIL", "did not remove token");
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
                             }
                         }
-
-
-
-
                     }
 
                     @Override
@@ -282,11 +324,6 @@ public class SummonFragment extends Fragment {
 
                     }
                 });
-
-//
-
-
-
             }
         });
 
