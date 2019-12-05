@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -129,34 +130,58 @@ public class CharactersFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
                 chosenFriend = listView.getItemAtPosition(pos).toString();
-                // TODO: find info need from choosing this character, and call a OnMyFriendsFragmentInteractionListener to pass this info to the FriendMapFragment
                 Log.d("FRIEND", "POS: " + pos + " ; Friend: " + chosenFriend);
-                charLocation.add(chosenFriend);
-                myRef2 = database.getReference("Characters/" + chosenFriend);
-                myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String charLoc;
-                        for(DataSnapshot data: dataSnapshot.getChildren()){
-                            if(data.getKey().equals("Latitude")){
-                                charLoc = data.getValue().toString();
-                                Collections.addAll(charLocation, charLoc);
-                            }
-                            if(data.getKey().equals("Longitude")){
-                                charLoc = data.getValue().toString();
-                                Collections.addAll(charLocation, charLoc);
-                            }
-                        }
+                final String[] cL = getResources().getStringArray(R.array.gold_character_DB_names);
+                int flag = 0;
+
+                for(int i = 0; i < cL.length; i++) {
+                    if(chosenFriend.equals(cL[i])) {
+                        BattleFragment battle_fragment = new BattleFragment();
+                        String tag = BattleFragment.class.getCanonicalName();
+
+                        Bundle extras = new Bundle();
+                        extras.putString("enemy", chosenFriend);
+                        battle_fragment.setArguments(extras);
+
+                        FragmentTransaction trans = getFragmentManager().beginTransaction();
+                        trans.replace(R.id.frame_fragment, battle_fragment, tag).commit();
+                        flag = 1;
                     }
+                }
+                if(flag == 0) {
+                    HomeFragment home_fragment = new HomeFragment();
+                    String tag = HomeFragment.class.getCanonicalName();
+                    FragmentTransaction trans = getFragmentManager().beginTransaction();
+                    trans.replace(R.id.frame_fragment, home_fragment, tag).commit();
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-
-                Log.d("Loc arrayList Value:", charLocation.toString());
-                mListener.onCharactersClicked(chosenFriend);
+//                charLocation.add(chosenFriend);
+//                myRef2 = database.getReference("Characters/" + chosenFriend);
+//                myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        String charLoc;
+//                        for(DataSnapshot data: dataSnapshot.getChildren()){
+//                            if(data.getKey().equals("Latitude")){
+//                                charLoc = data.getValue().toString();
+//                                Collections.addAll(charLocation, charLoc);
+//                            }
+//                            if(data.getKey().equals("Longitude")){
+//                                charLoc = data.getValue().toString();
+//                                Collections.addAll(charLocation, charLoc);
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//
+//                Log.d("Loc arrayList Value:", charLocation.toString());
+//                mListener.onCharactersClicked(chosenFriend);
             }
         });
 
