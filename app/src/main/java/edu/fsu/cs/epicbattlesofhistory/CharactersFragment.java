@@ -129,8 +129,33 @@ public class CharactersFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
                 chosenFriend = listView.getItemAtPosition(pos).toString();
-                // TODO: find info need from choosing this friend, and call a OnMyFriendsFragmentInteractionListener to pass this info to the FriendMapFragment
+                // TODO: find info need from choosing this character, and call a OnMyFriendsFragmentInteractionListener to pass this info to the FriendMapFragment
                 Log.d("FRIEND", "POS: " + pos + " ; Friend: " + chosenFriend);
+                charLocation.add(chosenFriend);
+                myRef2 = database.getReference("Characters/" + chosenFriend);
+                myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String charLoc;
+                        for(DataSnapshot data: dataSnapshot.getChildren()){
+                            if(data.getKey().equals("Latitude")){
+                                charLoc = data.getValue().toString();
+                                Collections.addAll(charLocation, charLoc);
+                            }
+                            if(data.getKey().equals("Longitude")){
+                                charLoc = data.getValue().toString();
+                                Collections.addAll(charLocation, charLoc);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                Log.d("Loc arrayList Value:", charLocation.toString());
                 mListener.onCharactersClicked(chosenFriend);
             }
         });
