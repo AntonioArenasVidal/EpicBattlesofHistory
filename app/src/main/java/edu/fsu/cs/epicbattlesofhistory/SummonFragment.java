@@ -117,7 +117,6 @@ public class SummonFragment extends Fragment {
                 Log.d("Random Value", String.valueOf(randomInt));
 
                 if (randomInt <= 10){
-                    Toast.makeText(getContext(), "Gold Character!!!", Toast.LENGTH_SHORT).show();
                     int randomGold =  rand.nextInt(5)+1;
                     switch (randomGold){
                         case 1:
@@ -136,10 +135,10 @@ public class SummonFragment extends Fragment {
                             summonedCharacter = "washington";
                             break;
                     }
+                    Toast.makeText(getContext(), "Gold Character!!!\n" + summonedCharacter, Toast.LENGTH_SHORT).show();
 
                 }
                 else if(randomInt > 10 && randomInt <= 30){
-                    Toast.makeText(getContext(), "Silver Character!", Toast.LENGTH_SHORT).show();
                     int randomSilver =  rand.nextInt(5)+1;
                     switch (randomSilver){
                         case 1:
@@ -158,10 +157,10 @@ public class SummonFragment extends Fragment {
                             summonedCharacter = "joan";
                             break;
                     }
+                    Toast.makeText(getContext(), "Silver Character!\n" + summonedCharacter, Toast.LENGTH_SHORT).show();
 
                 }
                 else {
-                    Toast.makeText(getContext(), "Bronze Character", Toast.LENGTH_SHORT).show();
                     int randomBronze =  rand.nextInt(5)+1;
                     switch (randomBronze){
                         case 1:
@@ -180,7 +179,7 @@ public class SummonFragment extends Fragment {
                             summonedCharacter = "cleopatra";
                             break;
                     }
-
+                    Toast.makeText(getContext(), "Bronze Character\n" + summonedCharacter, Toast.LENGTH_SHORT).show();
                 }
                 characterImageName = summonedCharacter + "_character";
 
