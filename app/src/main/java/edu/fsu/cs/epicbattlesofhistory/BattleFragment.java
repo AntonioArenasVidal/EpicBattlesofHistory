@@ -151,9 +151,10 @@ public class BattleFragment extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.w("DB SUCCESS", "removed token");
+                                        Log.w("DB SUCCESS", "added token");
+                                        Toast.makeText(getContext(),"You have earned 5 tokens!", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Log.w("DB FAIL", "did not remove token");
+                                        Log.w("DB FAIL", "did not add token");
                                     }
                                 }
                             });
